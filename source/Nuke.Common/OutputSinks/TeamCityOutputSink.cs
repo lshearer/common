@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Maintainers of NUKE.
+// Copyright 2019 Maintainers of NUKE.
 // Distributed under the MIT License.
 // https://github.com/nuke-build/nuke/blob/master/LICENSE
 
@@ -13,11 +13,12 @@ namespace Nuke.Common.OutputSinks
 {
     [UsedImplicitly]
     [ExcludeFromCodeCoverage]
-    internal class TeamCityOutputSink : ConsoleOutputSink
+    internal class TeamCityOutputSink : AnsiColorOutputSink
     {
         private readonly TeamCity _teamCity;
 
-        internal TeamCityOutputSink(TeamCity teamCity)
+        public TeamCityOutputSink(TeamCity teamCity)
+            : base(traceCode: "37", informationCode: "36", warningCode: "33", errorCode: "31", successCode: "32")
         {
             _teamCity = teamCity;
         }
@@ -28,18 +29,31 @@ namespace Nuke.Common.OutputSinks
                 () => _teamCity.OpenBlock(text),
                 () => _teamCity.CloseBlock(text));
         }
+    }
+    
+    [UsedImplicitly]
+    [ExcludeFromCodeCoverage]
+    internal class TeamServicesOutputSink : AnsiColorOutputSink
+    {
+        private readonly TeamServices _teamServices;
 
-        public override void Warn(string text, string details = null)
+        internal TeamServicesOutputSink(TeamServices teamServices)
         {
-            _teamCity.WriteWarning(text);
-            if (details != null)
-                _teamCity.WriteWarning(details);
+            _teamServices = teamServices;
         }
 
-        public override void Error(string text, string details = null)
+        public override void WriteWarning(string text, string details = null)
         {
-            _teamCity.WriteError(text, details);
-            _teamCity.AddBuildProblem(text);
+            _teamServices.LogIssue(TeamServicesIssueType.Warning, text);
+            if (details != null)
+                WriteNormal(details);
+        }
+
+        public override void WriteError(string text, string details = null)
+        {
+            _teamServices.LogIssue(TeamServicesIssueType.Error, text);
+            if (details != null)
+                WriteNormal(details);
         }
     }
 }

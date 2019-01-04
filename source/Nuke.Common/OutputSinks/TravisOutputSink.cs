@@ -12,15 +12,18 @@ namespace Nuke.Common.OutputSinks
 {
     [UsedImplicitly]
     [ExcludeFromCodeCoverage]
-    internal class TravisOutputSink : ConsoleOutputSink
+    internal class TravisOutputSink : AnsiColorOutputSink
     {
+        public TravisOutputSink()
+            : base(traceCode: "37", informationCode: "36;1", warningCode: "33;1", errorCode: "31;1", successCode: "32;1")
+        {
+        }
+
         public override IDisposable WriteBlock(string text)
         {
-            Info(FigletTransform.GetText(text));
-
             return DelegateDisposable.CreateBracket(
-                () => Write($"travis_fold:start:{text}"),
-                () => Write($"travis_fold:end:{text}"));
+                () => Console.WriteLine($"travis_fold:start:{text}"),
+                () => Console.WriteLine($"travis_fold:end:{text}"));
         }
     }
 }

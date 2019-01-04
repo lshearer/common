@@ -47,7 +47,7 @@ namespace Nuke.Common.Tools.DotNet
                     return LogLevel.Warning;
             }
 
-            return LogLevel.Information;
+            return LogLevel.Normal;
         }
     }
 }

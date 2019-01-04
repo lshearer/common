@@ -145,7 +145,7 @@ namespace Nuke.Common.Tooling
             Func<string, string> outputFilter)
         {
             var output = new BlockingCollection<Output>();
-            logLevelParser = logLevelParser ?? (x => LogLevel.Information);
+            logLevelParser = logLevelParser ?? (x => LogLevel.Normal);
 
             process.OutputDataReceived += (s, e) =>
             {
@@ -163,8 +163,8 @@ namespace Nuke.Common.Tooling
                         case LogLevel.Trace:
                             Logger.Trace(text);
                             break;
-                        case LogLevel.Information:
-                            Logger.Info(text);
+                        case LogLevel.Normal:
+                            Logger.Normal(text);
                             break;
                         case LogLevel.Warning:
                             Logger.Warn(text);
@@ -217,7 +217,7 @@ namespace Nuke.Common.Tooling
 
         public static void CheckPathEnvironmentVariable()
         {
-            if (Logger.LogLevel >= LogLevel.Information)
+            if (Logger.LogLevel >= LogLevel.Normal)
                 return;
             
             EnvironmentInfo.Variables

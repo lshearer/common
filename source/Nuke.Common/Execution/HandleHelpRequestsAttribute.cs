@@ -14,8 +14,8 @@ namespace Nuke.Common.Execution
         {
             if (NukeBuild.Help)
             {
-                Logger.Log(HelpTextService.GetTargetsText(NukeBuild.ExecutableTargets));
-                Logger.Log(HelpTextService.GetParametersText(instance, NukeBuild.ExecutableTargets));
+                Logger.Normal(HelpTextService.GetTargetsText(NukeBuild.ExecutableTargets));
+                Logger.Normal(HelpTextService.GetParametersText(instance, NukeBuild.ExecutableTargets));
             }
 
             if (NukeBuild.Plan)
