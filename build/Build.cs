@@ -59,6 +59,8 @@ partial class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
+            ToolPathResolver.GetPackageExecutable("xunit.runner.console", "xunit.console.{dll,exe}");
+            Environment.Exit(0);
             DeleteDirectories(GlobDirectories(SourceDirectory, "*/bin", "*/obj"));
             EnsureCleanDirectory(OutputDirectory);
         });

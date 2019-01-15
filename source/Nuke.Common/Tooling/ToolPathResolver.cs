@@ -52,7 +52,7 @@ namespace Nuke.Common.Tooling
 
             string GetPaketPackagesDirectory() =>
                 PaketPackagesConfigFile != null
-                    ? PaketPackageResolver.GetLocalInstalledPackageDirectory(
+                    ? PaketPackageResolver.GetLocalInstalledPackageDirectory(    
                         packageId,
                         PaketPackagesConfigFile)
                     : null;
@@ -61,9 +61,9 @@ namespace Nuke.Common.Tooling
                                     GetNuGetPackagesDirectory() ??
                                     GetPaketPackagesDirectory()).NotNull("packageDirectory != null");
 
-            var executables = Directory.GetFiles(packageDirectory, packageExecutable, SearchOption.AllDirectories);
-            ControlFlow.Assert(executables.Length > 0, $"Could not find '{packageExecutable}' inside '{packageDirectory}'.");
-            if (executables.Length == 1 && framework == null)
+            var executables = PathConstruction.GlobFiles(packageDirectory, $"**/*{packageExecutable}").ToList();
+            ControlFlow.Assert(executables.Count > 0, $"Could not find '{packageExecutable}' inside '{packageDirectory}'.");
+            if (executables.Count == 1 && framework == null)
                 return executables.Single();
 
             var frameworks = executables.Select(x => new FileInfo(x).Directory.NotNull().Name).ToList();
