@@ -16,6 +16,7 @@ namespace Nuke.Common.Tests.Execution
         private ExecutableTarget A = new ExecutableTarget { Name = nameof(A), IsDefault = true };
         private ExecutableTarget B = new ExecutableTarget { Name = nameof(B) };
         private ExecutableTarget C = new ExecutableTarget { Name = nameof(C) };
+        private ExecutableTarget DEF = new ExecutableTarget { Name = nameof(DEF) };
 
         [Fact]
         public void TestDefault()
@@ -75,6 +76,19 @@ namespace Nuke.Common.Tests.Execution
             AddTrigger(B, C);
             C.OrderDependencies.Add(A);
             GetPlan().Should().Equal(B, A, C);
+        }
+
+        [Theory]
+        [InlineData("def")]
+        [InlineData("DEF")]
+        [InlineData("dEf")]
+        [InlineData("d-ef")]
+        [InlineData("d-e-f")]
+        public void TestTargetNameVariations(string invokedTargetName)
+        {
+            var plan = ExecutionPlanner.GetExecutionPlan(new[] { A, B, C, DEF }, new[] { invokedTargetName });
+
+            plan.Should().Equal(DEF);
         }
 
         private IEnumerable<ExecutableTarget> GetPlan(ExecutableTarget[] invokedTargets = null)
